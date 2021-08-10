@@ -1,0 +1,33 @@
+%dw 2.0
+output application/json
+
+fun strToCharArr(str) =  str match  {
+    case null -> []
+    case ""   -> []
+    else      -> [str[0]] ++ strToCharArr(str[1 to sizeOf(str) - 1])
+}
+
+fun chunkStr(str, n: Number) = str match  {
+    case null -> []
+    case "" -> []
+    else -> if(n == 0) [] else if(sizeOf(str) <= n ) [str]
+                         else [str[0 to n - 1]] ++ chunkStr(str[n to sizeOf(str) - 1], n)
+}
+
+fun range(start, end, step = 1) = do {
+    var startLessThanEnd = if (start <= end) 1 else -1
+    ---
+    step match {
+    case 1 -> do {
+        var array = start to end
+        ---
+        array[0 to sizeOf(array) - 2]
+    }
+    else -> if ((start to start + step * startLessThanEnd) contains end) [start] 
+            else [start] ++ range(start + step * startLessThanEnd, end, step)
+      
+}}
+---
+
+
+range(9, 2, 2)

@@ -1,0 +1,14 @@
+%dw 2.0
+output application/json
+
+// Take the following object and transform all the values to uppercase
+fun valuesToUpper (obj: Object): Object =  obj mapObject ((value, key, index) -> (key): upper(value))
+
+// Take the object from exercise #1 and transform all the keys to uppercase
+fun keysToUpper (obj: Object): Object =  obj mapObject ((value, key, index) -> (upper(key)): value)
+
+// Remove all of the key:value pairs from the following object where the value is null (do not use the skipOnNull directive)
+fun removeNullPairs (obj: Object): Object = obj mapObject ((value, key, index) -> if (value == null) {} else (key):value )
+---
+
+removeNullPairs(payload)

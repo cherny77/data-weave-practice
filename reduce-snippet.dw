@@ -1,0 +1,43 @@
+%dw 2.0
+output application/json
+
+fun myMap (arr: Array<Any>, lambda: ((Any, Number) -> Any)) : Array<Any> = 
+                                (arr reduce ((item, accumulator = {index: 0, acc: []} ) -> 
+                                {index: accumulator.index + 1, acc: accumulator.acc ++ [lambda(item, accumulator.index)]})).acc
+
+fun myFilter (arr: Array<Any>, lambda:((Any, Number) -> Boolean)) : Array<Any> = 
+            (arr reduce ((item, accumulator = {index: 0, acc: []} ) -> 
+            {index: accumulator.index + 1, acc: if(lambda(item, accumulator.index)) accumulator.acc ++ [item]  else accumulator.acc })).acc
+
+fun mySizeOf (arr: Array<Any>) : Number = arr reduce ((item, accumulator = 0) -> accumulator  + 1)
+
+fun myJoinBy (arr: Array<String>, separator: String) : String = 
+                       (arr reduce ((item, accumulator: String) -> accumulator ++ separator ++ item)) as String
+
+fun myMaxBy (arr: Array<Any>, lambda: ((Any, Any) -> Any)) =  arr reduce ((item, accumulator) -> lambda(item, accumulator))
+
+fun myArrayToObject (arr : Array) = payload reduce ((item, accumulator) -> do {
+                                            var val = (item pluck ((value, key, index) -> [key, value]))[0]
+                                            ---
+                                            accumulator  update {
+                                            case ."$(val[0])"! -> val[1]
+                                            }
+})
+
+// [1,2,3,4,5] filter (($ mod 2) == 0) map ($ * 100)
+fun task7 (arr: Array<Number>) : Array<Number> = arr reduce ((item, accumulator= []) 
+                    -> if((item mod 2) == 0) accumulator ++ [item * 100]  else accumulator)
+
+fun partition (arr: Array<Any>, lambda: (Any) -> Boolean) : Array<Array> = 
+                    arr reduce ((item, accumulator = [[], []]) -> 
+                    if (lambda(item)) [accumulator[0] ++ [item], accumulator[1]] else [accumulator[0], accumulator[1] ++ [item]])
+---
+// myMap (payload, (item, index) -> item + 1) myFilter ((param_1, param_2) -> (param_1 mod 2) == 0)
+// payload myMaxBy ((a, b) -> if(a > b) a else b)
+
+
+// [1,2,3,4,5] filter (($ mod 2) == 0) map ($ * 100)
+
+// task7([1,2,3,4,5])
+
+partition([1,2,3,4], ((n) -> (n mod 2) == 0))

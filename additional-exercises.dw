@@ -1,0 +1,50 @@
+%dw 2.0
+output application/json
+
+fun strToCharArr(str) =  str match  {
+    case null -> []
+    case ""   -> []
+    else      -> [str[0]] ++ strToCharArr(str[1 to sizeOf(str) - 1])
+}
+
+fun chunkStr(str, n: Number) = str match  {
+    case null -> []
+    case "" -> []
+    else -> if(n == 0) [] else if(sizeOf(str) <= n ) [str]
+                         else [str[0 to n - 1]] ++ chunkStr(str[n to sizeOf(str) - 1], n)
+}
+
+// Implement strToCharArr using chunkStr
+fun strToCharArrUsingChunkStr(str) =  chunkStr(str, 1)
+
+// Implement a function called repeat that takes in an element e, and a number n, and returns an array containing e repeated n times.
+fun repeat(el: Any, n: Number | Null): Array<Any> = n  match {
+        case null -> [] 
+        case 0 ->  []
+        else -> if (el == null) [] else [el] ++ repeat(el, n as Number -1)
+}
+
+// Implement intersection, a function that takes in two arrays and returns a set of values that are common in both arrays.
+fun intersection <T>(a: Array<T>, b: Array<T>) : Array<T> = (a ++ b) filter ((item, index) -> 
+                                                            (a contains item) and (b contains item)) distinctBy $ as Array
+
+// Implement group, a function that takes in an array and a number that represents the group size.
+fun group <T>(arr: Array<T>, n : Number | Null) : Array<Array<T>> =  arr match  {
+    case null -> []
+    case [] -> []
+    else -> if (n == 0) [] else if(sizeOf(arr ) <= n ) [arr]
+                         else [arr[0 to n as Number - 1]] ++ chunkStr(arr[n as Number to sizeOf(arr) - 1], n as Number)
+}
+
+// mplement find which takes in an array, and a lambda that defines what you're looking for.
+// The find function should return the first value that matches. If no matches, it returns null.
+fun find <T>(arr: Array<T>, lambda: (T) -> Boolean, start = 0) : T|Null = (arr reduce((item, accumulator = {index : 0, value: null}) -> 
+                                                        if(accumulator.value == null and lambda(item) and accumulator.index >= start) {index : accumulator.index + 1, value: item} 
+                                                        else {index : accumulator.index + 1, value: accumulator.value})).value
+
+fun padLeft(val, el, n: Number) = if (sizeOf(val) >= n) val else (repeat(el, n - sizeOf(val)) reduce ($$ ++ $)) ++ val
+
+fun padRight(val, el, n: Number) = if (sizeOf(val) >= n) val else val ++ (repeat(el, n - sizeOf(val)) reduce ($$ ++ $)) 
+---
+
+padLeft("123", "0", 2)

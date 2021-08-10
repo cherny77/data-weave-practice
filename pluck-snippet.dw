@@ -1,0 +1,18 @@
+%dw 2.0
+output application/json
+
+// Get a list of the values
+fun toValueArray (obj: Object): Array =  obj pluck ((value, key, index) -> value)
+
+// Get a list of the keys
+fun toKeyArray (obj: Object): Array =  obj pluck ((value, key, index) -> key)
+
+// Get a list of the key-values
+fun toKeyValueArray (obj: Object): Array =  obj pluck ((value, key, index) -> (key): value)
+
+// Get two dimensional list of the key-values
+fun toKeyValueArray2Dim (obj: Object): Array =  obj pluck ((value, key, index) -> [key,  value])
+
+---
+
+toKeyValueArray2Dim(payload)
